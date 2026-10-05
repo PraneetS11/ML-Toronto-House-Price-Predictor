@@ -81,7 +81,7 @@ def train(data=DEFAULT_DATA, output=Path("artifacts"), reports=Path("reports"), 
         "metadata": result,
         "schema_version": 1,
     }
-    joblib.dump(artifact, output / "model.joblib")
+    joblib.dump(artifact, output / "model.joblib", compress=3)
     (reports / "metrics.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
     # Only training data informs EDA. Test scatter is a final diagnostic, not tuning input.
     fig, axes = plt.subplots(1, 2, figsize=(11, 4), layout="constrained")

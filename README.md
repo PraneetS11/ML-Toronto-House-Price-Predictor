@@ -34,8 +34,9 @@ streamlit run app.py
 ```
 
 On Windows, activate with `.venv\Scripts\activate` instead. Open the local URL printed
-by Streamlit. Training creates `artifacts/model.joblib` and regenerates the reports;
-the model binary is intentionally excluded from Git. Only load model artifacts you
+by Streamlit. Training creates `artifacts/model.joblib` and regenerates the reports.
+A compressed copy of the evaluated model is now versioned for hosted startup, so
+a fresh checkout can serve predictions without training during a user request. Only load model artifacts you
 created or trust: joblib/pickle files can execute code. To choose another trusted
 local artifact, set `HOUSE_PRICE_MODEL` before starting the demo.
 
@@ -197,9 +198,10 @@ src/house_price/
   listings.py                  Best-effort public listing/text import
 notebooks/archive/             Untouched original notebook and migration notes
 data/raw/                      Original source CSV
-artifacts/                     Locally generated model; ignored by Git
+artifacts/                     Versioned compressed model for hosted startup
 reports/                       Measured results and figures
 tests/                        Ingestion, leakage, inference, importer and UI tests
+requirements.txt               Hosting dependency entry point
 requirements-lock.txt          Exact tested environment dependencies
 pyproject.toml                 Package metadata and compatible dependency ranges
 .github/workflows/tests.yml    Automated checks and training smoke run
@@ -250,3 +252,20 @@ must be checked on the pull request rather than assumed from local results.
 - Developed a Streamlit price-estimation demo with validated housing inputs,
   best-effort Realtor.ca metadata import, pasted-text fallback, serialized preprocessing
   and automated tests for data integrity, inference and UI behavior.
+
+## Production deployment
+
+The deployment entry point is `app.py`, Python **3.12**, using `requirements.txt`.
+The compressed, trusted model in `artifacts/model.joblib` is versioned with the
+source and retains the evaluation metadata in `reports/metrics.json`. No credentials
+or secrets are required. Do not expose a user-uploaded model loader.
+
+For Streamlit Community Cloud, select this repository, the release branch, and
+`app.py`; choose Python 3.12 in advanced settings. The platform installs
+`requirements.txt` and starts Streamlit. Confirm a manual estimate and the visible
+evaluation metrics after deployment. The source snapshot and listing-import
+limitations above also apply to the hosted app.
+
+To update the released model, run `house-price-train`, review the metrics, run the
+checks, then commit the model together with its reports and code. Revert the release
+commit to roll back code and model together.

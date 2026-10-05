@@ -12,3 +12,4 @@ dist/
 .streamlit/secrets.toml
 artifacts/*
 !artifacts/.gitkeep
+!artifacts/model.joblib

@@ -1,0 +1,3 @@
+# Hosting entry point: reproduce the tested environment and install this package.
+-r requirements-lock.txt
+-e .
