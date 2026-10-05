@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ontario-house-price"
+version = "0.1.0"
+description = "Reproducible Ontario listing-price regression and interactive estimator"
+requires-python = ">=3.12"
+dependencies = [
+  "pandas>=2.2,<4", "numpy>=2,<3", "scikit-learn>=1.5,<2",
+  "joblib>=1.4,<2", "streamlit>=1.40,<2", "matplotlib>=3.9,<4",
+  "requests>=2.32,<3", "beautifulsoup4>=4.12,<5"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "ruff>=0.9,<1"]
+
+[project.scripts]
+house-price-train = "house_price.train:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
